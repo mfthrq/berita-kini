@@ -1,65 +1,69 @@
-import Image from "next/image";
+import { Suspense } from 'react';
+import { Navbar } from './components/organisms/Navbar';
+import { HeroArticle } from './components/organisms/HeroArticle';
+import { ArticleCarousel } from './components/organisms/ArticleCarousel';
+import { ArticleGrid } from './components/organisms/ArticleGrid';
+import { Footer } from './components/organisms/Footer';
+import { fetchNews, CATEGORY_MAP, VALID_CATEGORIES, type NewsCategory } from './lib/api';
 
-export default function Home() {
+interface HomeProps {
+  searchParams: Promise<{ kategori?: string }>;
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  const params = await searchParams;
+  const kategori = params.kategori as NewsCategory | undefined;
+
+  // Validate category, default to 'nasional'
+  const category: NewsCategory =
+    kategori && VALID_CATEGORIES.includes(kategori) ? kategori : 'nasional';
+
+  const articles = await fetchNews(category);
+
+  const categoryLabel = CATEGORY_MAP[category];
+
+  // First article as featured/hero
+  const featuredArticle = articles[0];
+  // Next 10 articles for the carousel
+  const popularArticles = articles.slice(1, 11);
+  // Remaining articles for the grid
+  const recommendedArticles = articles.slice(11);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="min-h-screen bg-background">
+      {/* Navbar */}
+      <Suspense fallback={null}>
+        <Navbar />
+      </Suspense>
+
+      {/* Hero Section */}
+      {featuredArticle && (
+        <HeroArticle
+          headline={featuredArticle.title}
+          description={featuredArticle.description}
+          image={featuredArticle.image}
+          category={featuredArticle.category}
+          date={featuredArticle.date}
+          link={featuredArticle.link}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      )}
+
+      {/* Popular Articles Carousel */}
+      <ArticleCarousel
+        title={`Berita ${categoryLabel} Terpopuler`}
+        articles={popularArticles}
+        showNavigation={true}
+      />
+
+      {/* Recommendations Grid */}
+      <ArticleGrid
+        title={`Berita ${categoryLabel} Lainnya`}
+        articles={recommendedArticles}
+        itemsPerPage={8}
+      />
+
+      {/* Footer */}
+      <Footer />
+    </main>
   );
 }
