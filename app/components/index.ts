@@ -15,5 +15,4 @@ export { Navbar } from './organisms/Navbar';
 export { HeroArticle } from './organisms/HeroArticle';
 export { ArticleCarousel } from './organisms/ArticleCarousel';
 export { ArticleGrid } from './organisms/ArticleGrid';
-export { CtaBanner } from './organisms/CtaBanner';
 export { Footer } from './organisms/Footer';

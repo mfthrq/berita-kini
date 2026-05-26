@@ -42,7 +42,7 @@ export const NewsletterForm: React.FC<NewsletterFormProps> = ({
       />
       <Button
         type="submit"
-        variant="secondary"
+        variant="primary"
         disabled={loading}
         className="whitespace-nowrap"
       >

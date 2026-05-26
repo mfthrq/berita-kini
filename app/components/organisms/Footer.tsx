@@ -50,8 +50,8 @@ export const Footer: React.FC = () => {
         {/* Logo and description */}
         <div className="mb-12">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">B</span>
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg">B</span>
             </div>
             <span className="text-lg font-bold">Berita Kini</span>
           </div>
@@ -91,24 +91,6 @@ export const Footer: React.FC = () => {
         <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-gray-400 text-sm">
             © {currentYear} Berita Kini. All Rights Reserved.
-          </div>
-
-          {/* Social Media Links */}
-          <div className="flex items-center gap-4">
-            {[
-              { icon: '📘', label: 'Facebook', href: '#facebook' },
-              { icon: '📷', label: 'Instagram', href: '#instagram' },
-              { icon: '𝕏', label: 'Twitter', href: '#twitter' },
-            ].map((social) => (
-              <a
-                key={social.label}
-                href={social.href}
-                className="w-10 h-10 rounded-full bg-gray-800 hover:bg-accent transition-colors flex items-center justify-center text-lg"
-                aria-label={social.label}
-              >
-                {social.icon}
-              </a>
-            ))}
           </div>
         </div>
       </div>
